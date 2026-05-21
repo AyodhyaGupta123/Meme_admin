@@ -101,13 +101,13 @@ export default function Login({ onLogin }) {
             </button>
           </form>
 
-          <div className="mt-6 rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs text-slate-500">
+          {/* <div className="mt-6 rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs text-slate-500">
             <p className="font-semibold text-slate-700 mb-1">
               Demo Credentials
             </p>
             <p>Email: admin@upipay.com</p>
             <p>Password: admin123</p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
