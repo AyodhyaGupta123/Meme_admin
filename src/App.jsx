@@ -1,53 +1,61 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-// Components
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
 
-// Pages
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import PaymentUpdate from './pages/PaymentUpdate';
-import UserInfo from './pages/UserInfo';
-import AccountUpdate from './pages/AccountUpdate';
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import PaymentUpdate from "./pages/PaymentUpdate";
+import UserInfo from "./pages/UserInfo";
+import AccountUpdate from "./pages/AccountUpdate";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [activePage, setActivePage] = useState('dashboard');
+  const [currentUser, setCurrentUser] = useState(() => {
+    const savedUser = localStorage.getItem("adminUser");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
+  const [activePage, setActivePage] = useState("dashboard");
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const isLoggedIn = !!currentUser;
 
   const handleLogin = (user) => {
+    localStorage.setItem("adminUser", JSON.stringify(user));
     setCurrentUser(user);
-    setIsLoggedIn(true);
-    setActivePage('dashboard');
+    setActivePage("dashboard");
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    localStorage.removeItem("adminUser");
     setCurrentUser(null);
-    setActivePage('dashboard');
+    setActivePage("dashboard");
+    setIsMobileOpen(false);
   };
 
-  // Protected Route Wrapper
   const ProtectedLayout = () => {
     if (!isLoggedIn) {
       return <Navigate to="/login" replace />;
     }
 
     return (
-      <div className="flex h-screen overflow-hidden bg-gray-50">
-        {/* Sidebar */}
-        <Sidebar 
-          activePage={activePage} 
-          setActivePage={setActivePage} 
+      <div className="min-h-screen bg-slate-50">
+        <Sidebar
+          activePage={activePage}
+          setActivePage={setActivePage}
+          isMobileOpen={isMobileOpen}
+          setIsMobileOpen={setIsMobileOpen}
         />
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <Navbar onLogout={handleLogout} />
-          
-          <main className="flex-1 overflow-auto p-6 bg-gray-50">
+        <div className="lg:ml-72 min-h-screen">
+          <Navbar
+            onLogout={handleLogout}
+            isMobileOpen={isMobileOpen}
+            setIsMobileOpen={setIsMobileOpen}
+          />
+
+          <main className="p-4 sm:p-6">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -64,19 +72,17 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Route */}
-        <Route 
-          path="/login" 
+        <Route
+          path="/login"
           element={
             !isLoggedIn ? (
               <Login onLogin={handleLogin} />
             ) : (
               <Navigate to="/" replace />
             )
-          } 
+          }
         />
 
-        {/* Protected Routes */}
         <Route path="/*" element={<ProtectedLayout />} />
       </Routes>
     </Router>
