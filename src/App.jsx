@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import PaymentUpdate from "./pages/PaymentUpdate";
 import UserInfo from "./pages/UserInfo";
 import AccountUpdate from "./pages/AccountUpdate";
+import UPIManagement from "./pages/UPIManagement";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -62,6 +63,7 @@ function App() {
               <Route path="/payments" element={<PaymentUpdate />} />
               <Route path="/user-info" element={<UserInfo />} />
               <Route path="/account" element={<AccountUpdate />} />
+              <Route path="/manage" element={<UPIManagement />} />
             </Routes>
           </main>
         </div>

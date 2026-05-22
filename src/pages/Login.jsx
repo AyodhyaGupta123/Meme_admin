@@ -1,26 +1,59 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, LogIn, ShieldCheck } from "lucide-react";
+import api from "../api/axios";
 
 export default function Login({ onLogin }) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
 
-    setTimeout(() => {
-      if (email === "admin@upipay.com" && password === "admin123") {
-        onLogin({ role: "admin", email });
-      } else {
-        setError("Invalid email or password");
+    if (!username.trim() || !password.trim()) {
+      setError("Username and password are required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const res = await api.post("/auth/login", {
+        email: username.trim(),
+        password: password.trim(),
+      });
+
+      const token = res.data?.token || res.data?.data?.token;
+      const user = res.data?.user || res.data?.data?.user;
+
+      if (!token || !user) {
+        setError("Invalid login response from server");
+        return;
       }
+
+      if (user.role !== "admin") {
+        setError("Only admin can access this panel");
+        return;
+      }
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("auth_token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      onLogin(user);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          "Invalid username or password",
+      );
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   return (
@@ -32,9 +65,8 @@ export default function Login({ onLogin }) {
               <ShieldCheck size={28} />
             </div>
 
-            <h1 className="text-2xl font-bold text-slate-950">
-              Admin Login
-            </h1>
+            <h1 className="text-2xl font-bold text-slate-950">Admin Login</h1>
+
             <p className="text-sm text-slate-500 mt-1">
               Sign in to manage users and payments.
             </p>
@@ -49,13 +81,15 @@ export default function Login({ onLogin }) {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Email Address
+                Username
               </label>
+
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@upipay.com"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="admin"
+                autoComplete="username"
                 required
                 className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:border-slate-900 transition"
               />
@@ -65,19 +99,21 @@ export default function Login({ onLogin }) {
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Password
               </label>
+
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
+                  autoComplete="current-password"
                   required
                   className="w-full h-12 px-4 pr-12 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:border-slate-900 transition"
                 />
 
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword((prev) => !prev)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900"
                 >
                   {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
@@ -100,14 +136,6 @@ export default function Login({ onLogin }) {
               )}
             </button>
           </form>
-
-          {/* <div className="mt-6 rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs text-slate-500">
-            <p className="font-semibold text-slate-700 mb-1">
-              Demo Credentials
-            </p>
-            <p>Email: admin@upipay.com</p>
-            <p>Password: admin123</p>
-          </div> */}
         </div>
       </div>
     </div>

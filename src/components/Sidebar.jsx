@@ -37,10 +37,10 @@ const Sidebar = ({
       path: "/user-info",
     },
     {
-      id: "transactions",
-      label: "All Transactions",
+      id: "management",
+      label: "Management",
       icon: TrendingUp,
-      path: "/transactions",
+      path: "/manage",
     },
     {
       id: "verification",
