@@ -10,6 +10,7 @@ import PaymentUpdate from "./pages/PaymentUpdate";
 import UserInfo from "./pages/UserInfo";
 import AccountUpdate from "./pages/AccountUpdate";
 import UPIManagement from "./pages/UPIManagement";
+import AdminSupportPage from "./components/AdminSupportPage";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -64,6 +65,7 @@ function App() {
               <Route path="/user-info" element={<UserInfo />} />
               <Route path="/account" element={<AccountUpdate />} />
               <Route path="/manage" element={<UPIManagement />} />
+              <Route path="/support" element={<AdminSupportPage />} />
             </Routes>
           </main>
         </div>
