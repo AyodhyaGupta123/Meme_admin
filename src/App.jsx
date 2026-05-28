@@ -65,7 +65,7 @@ function App() {
               <Route path="/user-info" element={<UserInfo />} />
               <Route path="/account" element={<AccountUpdate />} />
               <Route path="/manage" element={<UPIManagement />} />
-              <Route path="/support" element={<AdminSupportPage />} />
+              <Route path="/user-support" element={<AdminSupportPage />} />
             </Routes>
           </main>
         </div>

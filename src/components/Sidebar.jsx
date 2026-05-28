@@ -42,11 +42,17 @@ const Sidebar = ({
       icon: TrendingUp,
       path: "/manage",
     },
-    {
-      id: "verification",
-      label: "KYC Verification",
-      icon: UserCheck,
-      path: "/verification",
+    // {
+    //   id: "verification",
+    //   label: "KYC Verification",
+    //   icon: UserCheck,
+    //   path: "/verification",
+    // },
+     {
+      id: "User-Support",
+      label: "User Support",
+      icon: Sparkles,
+      path: "/user-support",
     },
   ];
 
